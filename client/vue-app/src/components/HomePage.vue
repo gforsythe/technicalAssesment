@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div id="user-info" >
     <h1>User Details</h1>
     <p v-if="user">
     name:{{ user.name }}<br>
@@ -7,9 +7,8 @@
     ID: {{ user.id }}
     </p>
     <div v-if="error">
-    <p > Failed to fetch user info. </p>
-    <p > Please try again. </p>
-    <p>Please Reload </p>
+    <p > Failed to fetch user info</p>
+    <p>Please refresh the page</p>
     <br>
     <p id="error-message">{{error}}</p>
     </div>
@@ -61,6 +60,11 @@ export default {
 #error-message {
   color: red;
   font-weight: bold;
+}
+
+#user-info{
+  padding-top: 1rem;
+    font-size: 1.5rem;
 }
 
 
