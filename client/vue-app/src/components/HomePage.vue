@@ -26,7 +26,7 @@ export default {
   async mounted() {
     try {
       const newUser = { name: 'newUser', diet: 'vegan' };
-      const response = await axios.post('http://localhost:3000/api/v1/users', newUser);
+      const response = await axios.post('http://localhost:3001/api/v1/users', newUser);
       this.user = response.data.newUser;
     } catch (error) {
       console.error('failed to fetch user', error);
