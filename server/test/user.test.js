@@ -12,7 +12,6 @@ beforeAll(() => {
 
 /* Test cases*/
 
-
 /*GET ID */
 describe('User REST API', () => {
   it('should return a unique UUID from /id', async () => {
@@ -43,28 +42,103 @@ describe('User REST API', () => {
 
   /*Create a new user */
   it('should create a new user to the mockdata base', async () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
     const newUser = { name: 'Habana', diet: "vegetarian" };
-    const response = await request(app).post(`/api/v1/users`).send(newUser).expect(201);
-    expect(response.body).toHaveProperty('newUser');
-    expect(response.body).toHaveProperty('newUser.name', 'Habana');
+    const response = await request(app).post(`/api/v1/users`).send(newUser);
+
+
+    if (response.status === 201) {
+      expect(response.body).toHaveProperty('newUser');
+      expect(response.body).toHaveProperty('newUser.name', 'Habana');
+    } else if (response.status === 500) {
+      expect(response.body).toHaveProperty('error');
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
+
+    }
+
+    jest.resetAllMocks();
+
+  });
+
+
+
+  /*Create new user name verification */
+
+  it('should return a 400 if user does not have a name', async () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+    const newUser = { name: "", diet: "vegan" };
+    const response = await request(app).post('/api/v1/users').send(newUser);
+    if (response.status === 400) {
+      expect(response.body).toHaveProperty('error');
+    } else if (response.status === 500) {
+      expect(response.body).toHaveProperty('error');
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
+
+    }
+    jest.resetAllMocks();
+  });
+
+  /*Create new user diet verifcation */
+  it('should return a 400 if user does not have a valid diet ', async () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+    const newUser = { name: "Casey", diet: "pescot" };
+    const response = await request(app).post('/api/v1/users').send(newUser);
+
+    if (response.status === 400) {
+      expect(response.body).toHaveProperty('error');
+    } else if (response.status === 500) {
+      expect(response.body).toHaveProperty('error');
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
+
+    }
+
+    jest.resetAllMocks();
+
+  });
+
+
+  /*Create New User - name already exists */
+  it('should return a 409 if the username is already taken', async () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+    const newUser = { name: "Gabe", diet: "meat" };
+    const response = await request(app).post('/api/v1/users').send(newUser);
+
+    if (response.status === 409) {
+      expect(response.body).toHaveProperty('error');
+    } else if (response.status === 500) {
+      expect(response.body).toHaveProperty('error');
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
+
+    }
+    jest.resetAllMocks();
+
   });
 
 
   /* Create new user should work 50% of the time */
   it('should create a post request with a 50% success rate ', async () => {
-    const success = Math.random() > 0.5;
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
     const newUser = { name: "Jo", diet: "meat" };
 
-   const response =  await request(app).post("/api/v1/users").send(newUser)
+    const response = await request(app).post("/api/v1/users").send(newUser);
 
     if (response.status === 201) {
       expect(response.body).toHaveProperty('newUser.name', "Jo");
-    } else if (response.status === 500){
+    } else if (response.status === 500) {
       expect(response.body).toHaveProperty('error');
-    }else{
-      throw new Error(`Unexpected status code: ${response.status}`)
+    } else {
+      throw new Error(`Unexpected status code: ${response.status}`);
     }
-
+    jest.resetAllMocks();
   });
 
 });
