@@ -20,16 +20,25 @@ export default {
   data() {
     return {
       user: null,
-      error: null
+      error: null,
+      listOfNames: ['George', 'Matthew', 'Liyanna', 'Ingrid', 'Frank', 'Mike', 'Casey'],
+      currentNameIndex: Math.floor(Math.random() * 7),
     };
+  },
+  methods: {
+    getNextName() {
+      const name = this.listOfNames[this.currentNameIndex];
+      this.currentNameIndex = (this.currentNameIndex + 1) % this.listOfNames.length;
+      return name;
+    },
   },
   async mounted() {
     try {
-      const newUser = { name: 'newUser', diet: 'vegan' };
+      const newUser = { name: this.getNextName(), diet: 'vegan' };
       const response = await axios.post('http://localhost:3001/api/v1/users', newUser);
       this.user = response.data.newUser;
     } catch (error) {
-      console.error('failed to fetch user', error);
+      console.error('Failed to create new user:', error);
       this.error = error;
     }
   },
