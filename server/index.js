@@ -109,7 +109,7 @@ app.post('/api/v1/users', (req, res) => {
     return res.status(201).json({ message: `Success! ${newUser.name} was added`, newUser });
   } catch (error) {
     console.error('Error in Post /api/v1/users', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Unable to create new userr' });
   }
 
 });
